@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url:'https://github.com/adhish-21/spring-petclinic.git'
+                git branch: 'main', url: 'https://github.com/adhish-21/spring-petclinic.git'
             }
         }
 
@@ -17,6 +17,16 @@ pipeline {
         stage('Test') {
             steps {
                 sh './mvnw test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                // Kill any existing instance of the application
+                sh 'pkill -f "spring-petclinic-*.jar" || true'
+                
+                // Start the new instance in the background
+                sh 'nohup java -jar target/spring-petclinic-*.jar &'
             }
         }
     }
@@ -35,4 +45,5 @@ pipeline {
         }
     }
 }
+
 
